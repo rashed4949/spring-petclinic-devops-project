@@ -37,7 +37,7 @@ pipeline {
                 rtMavenDeployer(
                     id: 'maven-deployer',
                     serverId: 'artifactory',            // matches Jenkins JFrog config ID
-                    releaseRepo: "${ARTIFACTORY_REPO}"
+                    releaseRepo: "${ARTIFACTORY_REPO}",
                     snapshotRepo: "petclinic-libs-snapshot"
                 )
                 rtMavenRun(
