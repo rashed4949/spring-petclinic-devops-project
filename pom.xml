@@ -10,7 +10,7 @@
 
   <groupId>org.springframework.samples</groupId>
   <artifactId>spring-petclinic</artifactId>
-  <version>4.0.0-SNAPSHOT</version>
+  <version>1.0.0-SNAPSHOT</version>
 
   <name>petclinic</name>
 
@@ -160,6 +160,12 @@
     </dependency>
   </dependencies>
 
+  <distributionManagement>
+    <repository>
+      <id>artifactory</id>
+      <url>http://164.90.215.116:8082/artifactory/petclinic-libs-release</url>
+    </repository>
+  </distributionManagement>
   <build>
     <plugins>
       <plugin>
