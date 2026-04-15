@@ -69,18 +69,12 @@ pipeline {
                         credentialsId: 'artifactory-creds',
                         usernameVariable: 'ART_USER',
                         passwordVariable: 'ART_PASS'
-                    ),
-                    sshUserPrivateKey(
-                        credentialsId: 'ansible-ssh-key',
-                        keyFileVariable: 'SSH_KEY',
-                        usernameVariable: 'SSH_USER'
                     )
                 ]) {
                     sh '''
                         ansible-playbook \
                         -i /var/lib/jenkins/ansible/inventory.ini \
                         /var/lib/jenkins/ansible/deploy-petclinic.yml \
-                        --private-key $SSH_KEY \
                         --extra-vars "app_version=${APP_VERSION} artifactory_user=$ART_USER artifactory_password=$ART_PASS"
                     '''
                 }
