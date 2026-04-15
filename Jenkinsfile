@@ -43,8 +43,8 @@ pipeline {
                     rtMavenDeployer(
                         id: 'maven-deployer',
                         serverId: 'artifactory',
-                        releaseRepo: "${ARTIFACTORY_REPO}",
-                        snapshotRepo: "petclinic-libs-snapshot"
+                        releaseRepo: "${ARTIFACTORY_REPO}"
+                    
                     )
 
                     rtMavenRun(
