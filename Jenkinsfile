@@ -7,10 +7,9 @@ pipeline {
     }
 
     environment {
-        ARTIFACTORY_URL  = 'http://164.90.215.116:8082'
+        ARTIFACTORY_URL  = 'http://164.90.215.116:8082/artifactory'
         ARTIFACTORY_REPO = 'petclinic-libs-release'
         APP_VERSION      = "${env.BUILD_NUMBER}"
-        ARTIF_CREDS      = credentials('artifactory-creds')
     }
 
     stages {
@@ -44,7 +43,6 @@ pipeline {
                         id: 'maven-deployer',
                         serverId: 'artifactory',
                         releaseRepo: "${ARTIFACTORY_REPO}"
-                    
                     )
 
                     rtMavenRun(
@@ -80,14 +78,15 @@ pipeline {
                 }
             }
         }
+    }
 
     post {
         success {
-            echo "PetClinic deployed successfully at http://139.59.157.224:80"
+            echo "PetClinic deployed successfully at http://139.59.157.224"
         }
 
         failure {
-            echo "Pipeline failed — check logs above rashed"
+            echo "Pipeline failed — check logs above"
         }
     }
 }
