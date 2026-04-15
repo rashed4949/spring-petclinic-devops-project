@@ -64,11 +64,18 @@ pipeline {
 
         stage('Deploy via Ansible') {
             steps {
-                withCredentials([usernamePassword(
-                    credentialsId: 'ansible-ssh-key',
-                    usernameVariable: 'SSH_KEY',
-                    passwordVariable: 'SSH_USER'
-                )]) {
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'artifactory-creds',
+                        usernameVariable: 'ART_USER',
+                        passwordVariable: 'ART_PASS'
+                    ),
+                    sshUserPrivateKey(
+                        credentialsId: 'ansible-ssh-key',
+                        keyFileVariable: 'SSH_KEY',
+                        usernameVariable: 'SSH_USER'
+                    )
+                ]) {
                     sh '''
                         ansible-playbook \
                         -i /var/lib/jenkins/ansible/inventory.ini \
@@ -79,7 +86,6 @@ pipeline {
                 }
             }
         }
-    }
 
     post {
         success {
