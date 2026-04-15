@@ -6,6 +6,10 @@ pipeline {
         jdk 'JDK17'
     }
 
+    triggers {
+        githubPush()
+    }
+
     environment {
         ARTIFACTORY_URL  = 'http://164.90.157.224:8082/artifactory'
         ARTIFACTORY_REPO = 'petclinic-libs-release'
@@ -23,7 +27,7 @@ pipeline {
 
         stage('Build & Test') {
             steps {
-                sh 'mvn clean install -DskipTests -Dcheckstyle.skip=true'
+                sh 'mvn clean package -DskipTests -Dcheckstyle.skip=true'
             }
 
             post {
@@ -45,7 +49,7 @@ pipeline {
 
                     rtMavenRun(
                         pom: 'pom.xml',
-                        goals: 'clean install -DskipTests -Dcheckstyle.skip=true',
+                        goals: 'clean deploy -DskipTests -Dcheckstyle.skip=true',
                         deployerId: 'maven-deployer',
                         buildName: 'petclinic',
                         buildNumber: "${APP_VERSION}"
