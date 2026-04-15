@@ -38,6 +38,7 @@ pipeline {
                     id: 'maven-deployer',
                     serverId: 'artifactory',            // matches Jenkins JFrog config ID
                     releaseRepo: "${ARTIFACTORY_REPO}"
+                    snapshotRepo: "petclinic-libs-snapshot"
                 )
                 rtMavenRun(
                     pom: 'pom.xml',
@@ -47,7 +48,7 @@ pipeline {
                     buildNumber: "${APP_VERSION}"
                 )
                 rtPublishBuildInfo(
-                    serverId: 'jfrog-artifactory',
+                    serverId: 'artifactory',
                     buildName: 'petclinic',
                     buildNumber: "${APP_VERSION}"
                 )
