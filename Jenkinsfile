@@ -7,9 +7,9 @@ pipeline {
     }
 
     environment {
-        ARTIFACTORY_URL  = 'http://164.90.215.116:8082/artifactory'
+        ARTIFACTORY_URL  = 'http://164.90.157.224:8082/artifactory'
         ARTIFACTORY_REPO = 'petclinic-libs-release'
-        APP_VERSION      = "${env.BUILD_NUMBER}"
+        APP_VERSION      = "${BUILD_NUMBER}"
     }
 
     stages {
@@ -23,9 +23,7 @@ pipeline {
 
         stage('Build & Test') {
             steps {
-                sh '''
-                    mvn clean install -DskipTests -Dcheckstyle.skip=true
-                '''
+                sh 'mvn clean install -DskipTests -Dcheckstyle.skip=true'
             }
 
             post {
@@ -71,12 +69,12 @@ pipeline {
                         passwordVariable: 'ART_PASS'
                     )
                 ]) {
-                    sh '''
+                    sh """
                         ansible-playbook \
                         -i /var/lib/jenkins/ansible/inventory.ini \
                         /var/lib/jenkins/ansible/deploy-petclinic.yml \
                         --extra-vars "app_version=${APP_VERSION} artifactory_user=$ART_USER artifactory_password=$ART_PASS"
-                    '''
+                    """
                 }
             }
         }
