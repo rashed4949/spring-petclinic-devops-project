@@ -11,7 +11,7 @@ See the presentation here:
 > For up-to-date information, please refer to this repository and its documentation.
 
 
-## Run Petclinic locally 
+## Run Petclinic locally ok
 
 Spring Petclinic is a [Spring Boot](https://spring.io/guides/gs/spring-boot) application built using [Maven](https://spring.io/guides/gs/maven/) or [Gradle](https://spring.io/guides/gs/gradle/).
 Java 17 or later is required for the build, and the application can run with Java 17 or newer.
