@@ -76,7 +76,7 @@ pipeline {
 
     post {
         success {
-            echo "Deployment successful 🚀 Version: ${APP_VERSION}"
+            echo " WOW! Deployment successful 🚀 Version: ${APP_VERSION}"
         }
         failure {
             echo "Pipeline failed ❌"
