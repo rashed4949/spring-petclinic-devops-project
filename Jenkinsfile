@@ -25,41 +25,31 @@ pipeline {
             }
         }
 
-        stage('Build & Test') {
+        stage('Build') {
             steps {
-                sh 'mvn clean package -DskipTests -Dcheckstyle.skip=true'
-            }
-
-            post {
-                always {
-                    junit allowEmptyResults: true,
-                          testResults: '**/target/surefire-reports/*.xml'
-                }
+                sh 'mvn clean package -DskipTests'
             }
         }
 
         stage('Upload to Artifactory') {
             steps {
                 script {
-                    rtMavenDeployer(
-                        id: 'maven-deployer',
-                        serverId: 'artifactory',
-                        releaseRepo: "${ARTIFACTORY_REPO}"
-                    )
+                    // Auto-detect correct JAR (ignore .original)
+                    def JAR_NAME = sh(
+                        script: "ls target/*.jar | grep -v original | head -1",
+                        returnStdout: true
+                    ).trim()
 
-                    rtMavenRun(
-                        pom: 'pom.xml',
-                        goals: 'clean deploy -DskipTests -Dcheckstyle.skip=true',
-                        deployerId: 'maven-deployer',
-                        buildName: 'petclinic',
-                        buildNumber: "${APP_VERSION}"
-                    )
-
-                    rtPublishBuildInfo(
-                        serverId: 'artifactory',
-                        buildName: 'petclinic',
-                        buildNumber: "${APP_VERSION}"
-                    )
+                    withCredentials([usernamePassword(
+                        credentialsId: 'artifactory-creds',
+                        usernameVariable: 'ART_USER',
+                        passwordVariable: 'ART_PASS'
+                    )]) {
+                        sh """
+                            curl -u $ART_USER:$ART_PASS -T ${JAR_NAME} \
+                            ${ARTIFACTORY_URL}/${ARTIFACTORY_REPO}/petclinic-${APP_VERSION}.jar
+                        """
+                    }
                 }
             }
         }
@@ -86,11 +76,10 @@ pipeline {
 
     post {
         success {
-            echo "PetClinic deployed successfully 🚀"
+            echo "Deployment successful 🚀 Version: ${APP_VERSION}"
         }
-
         failure {
-            echo "Pipeline failed — check logs above ❌"
+            echo "Pipeline failed ❌"
         }
     }
 }
