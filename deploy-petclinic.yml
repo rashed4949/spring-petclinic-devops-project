@@ -1,0 +1,24 @@
+- name: Deploy Spring PetClinic
+  hosts: prod_servers
+  become: yes
+
+  tasks:
+
+    - name: Create directory
+      file:
+        path: /opt/petclinic
+        state: directory
+
+    - name: Download artifact from Artifactory
+      get_url:
+        url: "http://164.90.215.116:8082/artifactory/petclinic-libs-release/petclinic-{{ app_version }}.jar"
+        dest: /opt/petclinic/app.jar
+        mode: '0755'
+        url_username: "{{ artifactory_user }}"
+        url_password: "{{ artifactory_password }}"
+
+    - name: Restart application
+      systemd:
+        name: petclinic
+        state: restarted
+        daemon_reload: yes
